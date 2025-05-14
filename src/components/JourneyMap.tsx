@@ -137,10 +137,14 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
     // Fit bounds to show the entire route
     const bounds = new mapboxgl.LngLatBounds();
     
-    // Fix: Convert coordinates to LngLatLike objects before extending bounds
-    bounds.extend([5.3833, 52.2333] as mapboxgl.LngLatLike); // Bunschoten
-    bounds.extend(parkingCoordinates as mapboxgl.LngLatLike); // Parking location
-    bounds.extend([4.3246, 52.0799] as mapboxgl.LngLatLike); // Den Haag
+    // Convert coordinates to the correct type for mapboxgl.LngLatBounds.extend()
+    const startCoord: mapboxgl.LngLatLike = [5.3833, 52.2333]; // Bunschoten
+    const parkingCoord: mapboxgl.LngLatLike = parkingCoordinates as mapboxgl.LngLatLike; // Parking location
+    const endCoord: mapboxgl.LngLatLike = [4.3246, 52.0799]; // Den Haag
+    
+    bounds.extend(startCoord);
+    bounds.extend(parkingCoord);
+    bounds.extend(endCoord);
 
     map.current.fitBounds(bounds, {
       padding: 60,
