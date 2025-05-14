@@ -27,7 +27,7 @@ export interface Route {
 }
 
 export interface RouteFilter {
-  sortBy: 'time' | 'cost' | 'sustainability';
+  sortBy: 'fastest' | 'cheapest' | 'recommended';
   maxTransfers?: number;
   maxWalkingDistance?: number;
 }
