@@ -34,7 +34,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ route }) => {
               </Badge>
             </div>
             <div>
-              <Badge className="bg-green-100 text-green-800 text-[10px] px-1.5 py-0.5">
+              <Badge className="bg-green-100 text-green-800 text-[10px] px-2.5 py-0.5 min-w-16 text-center">
                 {route.totalCO2.toFixed(1)} kg CO₂
               </Badge>
             </div>
