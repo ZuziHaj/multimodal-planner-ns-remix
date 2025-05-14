@@ -1,9 +1,8 @@
-
 import mapboxgl from 'mapbox-gl';
 import { Route } from '@/utils/types';
 
-// This would be stored in environment variables in a real app
-export const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZWRlbW8iLCJhIjoiY2xzdnJ1b2liMGk1bjJrbzYwbGNnaWg3MCJ9.MjA9mPB0tZQ0zE-GPyPlzg';
+// Update the token to use the user's provided token
+export const MAPBOX_TOKEN = 'pk.eyJ1IjoienV6aWhhajExIiwiYSI6ImNtYW5ybWx1MzAxb2UyanNmbGpydnFzemoifQ.5GQKavyrl0dCNItDS3nb4A';
 
 export const getRouteCoordinates = (routeId: string): [number, number][] => {
   console.log(`Getting route coordinates for route ID: ${routeId}`);
