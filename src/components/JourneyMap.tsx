@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Route } from '@/utils/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -139,7 +140,7 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
           </div>
         ) : null}
 
-        <div className="aspect-[16/9] bg-muted rounded-md overflow-hidden relative">
+        <div className="h-[400px] bg-muted rounded-md overflow-hidden relative">
           <div ref={mapContainer} className="h-full w-full" />
           {mapError && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/80">

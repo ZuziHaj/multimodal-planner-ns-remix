@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import RouteForm from '@/components/RouteForm';
@@ -105,12 +106,18 @@ const Index = () => {
             ))}
           </div>
           
-          <div>
+          <div className="space-y-6">
             <RouteDetails route={selectedRoute} />
+            
+            {/* The map will be visible here on large screens */}
+            <div className="hidden lg:block">
+              <JourneyMap route={selectedRoute} />
+            </div>
           </div>
         </div>
         
-        <div className="mb-6">
+        {/* This map is only visible on small screens */}
+        <div className="lg:hidden mb-6">
           <JourneyMap route={selectedRoute} />
         </div>
       </div>
