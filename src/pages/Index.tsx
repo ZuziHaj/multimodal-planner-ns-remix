@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import RouteForm from '@/components/RouteForm';
@@ -87,28 +86,31 @@ const Index = () => {
         
         <RouteForm onFilterChange={handleFilterChange} />
         
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <div className="mb-4">
-              <h3 className="text-lg font-medium text-ns-blue">Route Options</h3>
-              <p className="text-sm text-muted-foreground">
-                Choose the best option for your journey
-              </p>
-            </div>
-            
-            {routes.map(route => (
-              <RouteCard
-                key={route.id}
-                route={route}
-                selected={route.id === selectedRouteId}
-                onSelect={setSelectedRouteId}
-              />
-            ))}
+        <div className="mb-6">
+          <div className="mb-4">
+            <h3 className="text-lg font-medium text-ns-blue">Route Options</h3>
+            <p className="text-sm text-muted-foreground">
+              Choose the best option for your journey
+            </p>
           </div>
           
-          <div className="space-y-6">
-            <RouteDetails route={selectedRoute} />
+          {routes.map(route => (
+            <RouteCard
+              key={route.id}
+              route={route}
+              selected={route.id === selectedRouteId}
+              onSelect={setSelectedRouteId}
+            />
+          ))}
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
             <JourneyMap route={selectedRoute} />
+          </div>
+          
+          <div>
+            <RouteDetails route={selectedRoute} />
           </div>
         </div>
       </div>
