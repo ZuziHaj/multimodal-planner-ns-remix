@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Route } from '@/utils/types';
-import { formatDuration } from '@/components/RouteCard';
+import { formatDuration } from '@/utils/formatters';
 import { Car, Clock, MapPin, Train } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

@@ -12,13 +12,6 @@ interface RouteCardProps {
   onSelect: (routeId: string) => void;
 }
 
-// This function would be in a separate formatters.ts file in a real app
-export const formatDuration = (minutes: number): string => {
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  return `${hours}h ${mins}m`;
-};
-
 const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
   const handleSelect = () => {
     onSelect(route.id);
