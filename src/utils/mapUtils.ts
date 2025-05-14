@@ -1,3 +1,4 @@
+
 import mapboxgl from 'mapbox-gl';
 import { Route } from '@/utils/types';
 
@@ -34,6 +35,56 @@ export const getTrainCoordinates = (parkingCoordinates: [number, number]): [numb
     parkingCoordinates,
     [4.3246, 52.0799], // Den Haag
   ];
+};
+
+// Fetch realistic car route using Mapbox Directions API
+export const fetchRealCarRoute = async (start: [number, number], end: [number, number]): Promise<GeoJSON.LineString | null> => {
+  try {
+    console.log('Fetching realistic car route from Mapbox Directions API');
+    const startStr = `${start[0]},${start[1]}`;
+    const endStr = `${end[0]},${end[1]}`;
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${startStr};${endStr}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.routes && data.routes.length > 0) {
+      console.log('Successfully retrieved car route geometry');
+      return data.routes[0].geometry;
+    } else {
+      console.error('No routes found in Directions API response:', data);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching car route:', error);
+    return null;
+  }
+};
+
+// Fetch realistic train route using Mapbox Directions API
+export const fetchRealTrainRoute = async (start: [number, number], end: [number, number]): Promise<GeoJSON.LineString | null> => {
+  try {
+    console.log('Fetching realistic train route from Mapbox Directions API');
+    const startStr = `${start[0]},${start[1]}`;
+    const endStr = `${end[0]},${end[1]}`;
+    // Using "driving-traffic" as a proxy for train routes, since Mapbox doesn't have a specific train profile
+    // In a production app, you might want to use a specialized API for public transport
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${startStr};${endStr}?geometries=geojson&access_token=${MAPBOX_TOKEN}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    if (data.routes && data.routes.length > 0) {
+      console.log('Successfully retrieved train route geometry');
+      return data.routes[0].geometry;
+    } else {
+      console.error('No routes found in Directions API response:', data);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching train route:', error);
+    return null;
+  }
 };
 
 export const fitMapBounds = (

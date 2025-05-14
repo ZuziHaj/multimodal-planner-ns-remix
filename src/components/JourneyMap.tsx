@@ -59,7 +59,8 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
       console.log('Creating new mapbox map instance');
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11',
+        // Use a more Google Maps-like style with detailed roads and features
+        style: 'mapbox://styles/mapbox/streets-v12', 
         center: [5.0, 52.1], // Center of Netherlands
         zoom: 8,
         attributionControl: true,
@@ -78,6 +79,9 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
 
       // Add navigation control
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      
+      // Add scale control
+      map.current.addControl(new mapboxgl.ScaleControl(), 'bottom-left');
 
       // Cleanup
       return () => {

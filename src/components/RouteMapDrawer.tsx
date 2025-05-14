@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { Route } from '@/utils/types';
-import { getRouteCoordinates, getParkingCoordinates, getTrainCoordinates, fitMapBounds } from '@/utils/mapUtils';
+import { getRouteCoordinates, getParkingCoordinates, getTrainCoordinates, fitMapBounds, fetchRealCarRoute, fetchRealTrainRoute } from '@/utils/mapUtils';
 
 interface RouteMapDrawerProps {
   map: mapboxgl.Map | null;
@@ -11,8 +11,9 @@ interface RouteMapDrawerProps {
 
 const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
   const drawCompleted = useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const drawRoute = () => {
+  const drawRoute = async () => {
     if (!map) {
       console.error('Map instance not available');
       return;
@@ -20,41 +21,50 @@ const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
     
     try {
       console.log('Drawing route:', route.id);
+      setIsLoading(true);
       
       // Clear existing layers and sources
-      if (map.getSource('car-route')) {
-        map.removeLayer('car-route-layer');
-        map.removeSource('car-route');
-      }
-      if (map.getSource('train-route')) {
-        map.removeLayer('train-route-layer');
-        map.removeSource('train-route');
-      }
-      if (map.getSource('parking')) {
-        map.removeLayer('parking-layer');
-        map.removeSource('parking');
-      }
-
-      // Get coordinates
-      const carCoordinates = getRouteCoordinates(route.id);
-      const parkingCoordinates = getParkingCoordinates(route.id);
-      const trainCoordinates = getTrainCoordinates(parkingCoordinates);
-      
-      console.log('Route coordinates:', {
-        carCoordinates,
-        parkingCoordinates,
-        trainCoordinates
+      ['car-route', 'train-route', 'parking'].forEach(source => {
+        if (map.getSource(source)) {
+          const layers = [`${source}-layer`];
+          if (source === 'parking') {
+            layers.push('parking-marker');
+          }
+          
+          layers.forEach(layer => {
+            if (map.getLayer(layer)) {
+              map.removeLayer(layer);
+            }
+          });
+          
+          map.removeSource(source);
+        }
       });
 
-      // Add the car route
+      // Get coordinates
+      const carStartEnd = getRouteCoordinates(route.id);
+      const parkingCoordinates = getParkingCoordinates(route.id);
+      const trainStartEnd = getTrainCoordinates(parkingCoordinates);
+      
+      console.log('Route coordinates:', {
+        carStartEnd,
+        parkingCoordinates,
+        trainStartEnd
+      });
+
+      // Fetch realistic routes
+      const carRouteGeometry = await fetchRealCarRoute(carStartEnd[0], carStartEnd[1]);
+      const trainRouteGeometry = await fetchRealTrainRoute(trainStartEnd[0], trainStartEnd[1]);
+      
+      // Add the car route (realistic or fallback to straight line)
       map.addSource('car-route', {
         'type': 'geojson',
         'data': {
           'type': 'Feature',
           'properties': {},
-          'geometry': {
+          'geometry': carRouteGeometry || {
             'type': 'LineString',
-            'coordinates': carCoordinates
+            'coordinates': carStartEnd
           }
         }
       });
@@ -101,15 +111,30 @@ const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
         }
       });
 
-      // Add the train route
+      // Add parking marker icon with P symbol
+      map.addLayer({
+        'id': 'parking-marker',
+        'type': 'symbol',
+        'source': 'parking',
+        'layout': {
+          'text-field': 'P',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12
+        },
+        'paint': {
+          'text-color': '#ffffff'
+        }
+      });
+
+      // Add the train route (realistic or fallback to straight line)
       map.addSource('train-route', {
         'type': 'geojson',
         'data': {
           'type': 'Feature',
           'properties': {},
-          'geometry': {
+          'geometry': trainRouteGeometry || {
             'type': 'LineString',
-            'coordinates': trainCoordinates
+            'coordinates': trainStartEnd
           }
         }
       });
@@ -131,9 +156,9 @@ const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
       });
 
       // Fit bounds to show the entire route
-      const startCoord = carCoordinates[0] as mapboxgl.LngLatLike;
+      const startCoord = carStartEnd[0] as mapboxgl.LngLatLike;
       const parkingCoord = parkingCoordinates as mapboxgl.LngLatLike;
-      const endCoord = trainCoordinates[trainCoordinates.length - 1] as mapboxgl.LngLatLike;
+      const endCoord = trainStartEnd[trainStartEnd.length - 1] as mapboxgl.LngLatLike;
       
       console.log('Fitting map bounds with coordinates', { startCoord, parkingCoord, endCoord });
       
@@ -143,6 +168,8 @@ const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
       console.log('Route drawing completed successfully');
     } catch (error) {
       console.error('Error drawing route:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -170,7 +197,11 @@ const RouteMapDrawer: React.FC<RouteMapDrawerProps> = ({ map, route }) => {
     };
   }, [route.id, map]);
 
-  return null;
+  return isLoading ? (
+    <div className="absolute top-0 right-0 bg-white/80 px-2 py-1 text-xs m-1 rounded">
+      Loading routes...
+    </div>
+  ) : null;
 };
 
 export default RouteMapDrawer;
