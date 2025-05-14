@@ -6,6 +6,7 @@ import { Route } from '@/utils/types';
 export const MAPBOX_TOKEN = 'pk.eyJ1IjoibG92YWJsZWRlbW8iLCJhIjoiY2xzdnJ1b2liMGk1bjJrbzYwbGNnaWg3MCJ9.MjA9mPB0tZQ0zE-GPyPlzg';
 
 export const getRouteCoordinates = (routeId: string): [number, number][] => {
+  console.log(`Getting route coordinates for route ID: ${routeId}`);
   switch (routeId) {
     case '1':
       return [[5.3833, 52.2333], [5.3872, 52.1561]]; // Bunschoten to Amersfoort
@@ -17,6 +18,7 @@ export const getRouteCoordinates = (routeId: string): [number, number][] => {
 };
 
 export const getParkingCoordinates = (routeId: string): [number, number] => {
+  console.log(`Getting parking coordinates for route ID: ${routeId}`);
   switch (routeId) {
     case '1':
       return [5.3872, 52.1561]; // Amersfoort
@@ -28,6 +30,7 @@ export const getParkingCoordinates = (routeId: string): [number, number] => {
 };
 
 export const getTrainCoordinates = (parkingCoordinates: [number, number]): [number, number][] => {
+  console.log(`Getting train coordinates from parking location:`, parkingCoordinates);
   return [
     parkingCoordinates,
     [4.3246, 52.0799], // Den Haag
@@ -40,14 +43,22 @@ export const fitMapBounds = (
   parkingCoord: mapboxgl.LngLatLike,
   endCoord: mapboxgl.LngLatLike
 ) => {
-  const bounds = new mapboxgl.LngLatBounds();
-  
-  bounds.extend(startCoord);
-  bounds.extend(parkingCoord);
-  bounds.extend(endCoord);
+  try {
+    console.log('Creating bounds with coordinates:', { startCoord, parkingCoord, endCoord });
+    const bounds = new mapboxgl.LngLatBounds();
+    
+    bounds.extend(startCoord);
+    bounds.extend(parkingCoord);
+    bounds.extend(endCoord);
+    
+    console.log('Map bounds created, applying fit');
 
-  map.fitBounds(bounds, {
-    padding: 60,
-    duration: 1000
-  });
+    map.fitBounds(bounds, {
+      padding: 60,
+      duration: 1000
+    });
+    console.log('Map bounds applied successfully');
+  } catch (error) {
+    console.error('Error fitting map bounds:', error);
+  }
 };

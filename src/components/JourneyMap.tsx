@@ -18,23 +18,62 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapInitialized, setMapInitialized] = useState(false);
   const [apiKey, setApiKey] = useState<string>(MAPBOX_TOKEN);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || mapInitialized) return;
+    if (!mapContainer.current) {
+      console.log('Map container ref not available yet');
+      return;
+    }
+
+    // Prevent multiple initializations
+    if (map.current) {
+      console.log('Map already initialized, skipping');
+      return; 
+    }
     
+    console.log('Initializing map with token:', apiKey ? 'Token provided' : 'No token');
+    
+    if (!apiKey) {
+      console.error('No Mapbox API key provided');
+      setMapError('Missing Mapbox API key');
+      return;
+    }
+
     mapboxgl.accessToken = apiKey;
     
     try {
+      // Calculate container dimensions to ensure visibility
+      const containerWidth = mapContainer.current.clientWidth;
+      const containerHeight = mapContainer.current.clientHeight;
+      
+      console.log(`Map container dimensions: ${containerWidth}x${containerHeight}px`);
+      
+      if (containerWidth === 0 || containerHeight === 0) {
+        console.error('Map container has zero width or height');
+        setMapError('Map container has invalid dimensions');
+        return;
+      }
+
+      console.log('Creating new mapbox map instance');
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11',
         center: [5.0, 52.1], // Center of Netherlands
         zoom: 8,
+        attributionControl: true,
       });
 
       map.current.on('load', () => {
+        console.log('Map loaded successfully');
         setMapInitialized(true);
+        setMapError(null);
+      });
+
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        setMapError(`Map error: ${e.error?.message || 'Unknown error'}`);
       });
 
       // Add navigation control
@@ -42,16 +81,37 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
 
       // Cleanup
       return () => {
-        map.current?.remove();
+        console.log('Cleaning up map');
+        if (map.current) {
+          map.current.remove();
+          map.current = null;
+        }
       };
     } catch (error) {
       console.error('Error initializing map:', error);
+      setMapError(`Failed to initialize map: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
-  }, [apiKey, mapInitialized]);
+  }, [apiKey]);
+
+  // Validate route data
+  useEffect(() => {
+    if (!route) {
+      console.error('Route data is undefined');
+      return;
+    }
+    
+    console.log('Route data received:', route.id);
+  }, [route]);
 
   // API key input for users without a preset key
   const handleApiKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setApiKey(e.target.value);
+    // Reset map to reinitialize with new token
+    if (map.current) {
+      map.current.remove();
+      map.current = null;
+      setMapInitialized(false);
+    }
   };
 
   return (
@@ -76,13 +136,20 @@ const JourneyMap: React.FC<JourneyMapProps> = ({ route }) => {
           </div>
         ) : null}
 
-        <div className="aspect-video bg-muted rounded-md overflow-hidden">
+        <div className="aspect-video bg-muted rounded-md overflow-hidden relative">
           <div ref={mapContainer} className="h-full w-full" />
+          {mapError && (
+            <div className="absolute inset-0 flex items-center justify-center bg-background/80">
+              <div className="text-sm text-destructive font-medium p-4 text-center">
+                {mapError}
+              </div>
+            </div>
+          )}
         </div>
         
         <MapLegend segments={route.segments} parkingLocation={route.parkingLocation} />
         
-        {mapInitialized && <RouteMapDrawer map={map.current} route={route} />}
+        {mapInitialized && map.current && <RouteMapDrawer map={map.current} route={route} />}
       </CardContent>
     </Card>
   );
