@@ -7,7 +7,7 @@ const Header: React.FC = () => {
       <div className="flex items-center gap-3">
         <div className="flex items-center">
           <img 
-            src="/lovable-uploads/2cc0595a-747d-4ddc-bb9f-47a4d9e578fd.png" 
+            src="/lovable-uploads/dde2be67-9126-4403-aaeb-aa7f82128436.png" 
             alt="NS logo" 
             className="h-10 w-auto bg-ns-yellow p-1 rounded-sm"
           />
