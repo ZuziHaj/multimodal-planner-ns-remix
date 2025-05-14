@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import RouteForm from '@/components/RouteForm';
@@ -40,14 +39,23 @@ const Index = () => {
     let sortedRoutes = [...routes];
     
     switch (filter.sortBy) {
-      case 'time':
+      case 'fastest':
         sortedRoutes.sort((a, b) => a.totalDuration - b.totalDuration);
         break;
-      case 'cost':
+      case 'cheapest':
         sortedRoutes.sort((a, b) => a.totalCost - b.totalCost);
         break;
-      case 'sustainability':
-        sortedRoutes.sort((a, b) => a.totalCO2 - b.totalCO2);
+      case 'recommended':
+        // Put the recommended route at the top, keep others in original order
+        const recommendedRouteIndex = sortedRoutes.findIndex(route => {
+          const routeOption = tripOptionsData.tripOptions.find(option => option.option.toString() === route.id);
+          return routeOption?.recommended === true;
+        });
+        
+        if (recommendedRouteIndex !== -1) {
+          const recommendedRoute = sortedRoutes.splice(recommendedRouteIndex, 1)[0];
+          sortedRoutes = [recommendedRoute, ...sortedRoutes];
+        }
         break;
     }
     

@@ -10,7 +10,7 @@ const Header: React.FC = () => {
         <h1 className="text-xl font-bold">NS Multimodal Planner</h1>
       </div>
       <div className="text-sm">
-        Bunschoten → Den Haag
+        Emmeloord → Den Haag
       </div>
     </header>
   );

@@ -11,14 +11,14 @@ interface RouteFormProps {
 }
 
 const RouteForm: React.FC<RouteFormProps> = ({ onFilterChange }) => {
-  const [origin] = useState('Bunschoten');
+  const [origin] = useState('Emmeloord');
   const [destination] = useState('Den Haag');
   const [date] = useState(new Date().toISOString().split('T')[0]);
   const [time] = useState('08:00');
-  const [sortBy, setSortBy] = useState<'time' | 'cost' | 'sustainability'>('time');
+  const [sortBy, setSortBy] = useState<'fastest' | 'cheapest' | 'recommended'>('recommended');
 
   const handleSortChange = (value: string) => {
-    const newSortBy = value as 'time' | 'cost' | 'sustainability';
+    const newSortBy = value as 'fastest' | 'cheapest' | 'recommended';
     setSortBy(newSortBy);
     onFilterChange({ sortBy: newSortBy });
   };
@@ -61,9 +61,9 @@ const RouteForm: React.FC<RouteFormProps> = ({ onFilterChange }) => {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="time">Fastest</SelectItem>
-              <SelectItem value="cost">Cheapest</SelectItem>
-              <SelectItem value="sustainability">Eco-friendly</SelectItem>
+              <SelectItem value="recommended">Recommended</SelectItem>
+              <SelectItem value="fastest">Fastest</SelectItem>
+              <SelectItem value="cheapest">Cheapest</SelectItem>
             </SelectContent>
           </Select>
         </div>
