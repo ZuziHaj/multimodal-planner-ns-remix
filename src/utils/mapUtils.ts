@@ -1,39 +1,45 @@
 
 import mapboxgl from 'mapbox-gl';
-import { Route } from '@/utils/types';
 
-// Update the token to use the user's provided token
+// User's provided Mapbox token
 export const MAPBOX_TOKEN = 'pk.eyJ1IjoienV6aWhhajExIiwiYSI6ImNtYW5ybWx1MzAxb2UyanNmbGpydnFzemoifQ.5GQKavyrl0dCNItDS3nb4A';
 
 export const getRouteCoordinates = (routeId: string): [number, number][] => {
   console.log(`Getting route coordinates for route ID: ${routeId}`);
   switch (routeId) {
-    case '1':
-      return [[5.3833, 52.2333], [5.3872, 52.1561]]; // Bunschoten to Amersfoort
-    case '2':
-      return [[5.3833, 52.2333], [5.1222, 52.0900]]; // Bunschoten to Utrecht
+    case '1': // Direct drive to Den Haag
+      return [[5.7480, 52.7100], [4.3100, 52.0800]]; // Emmeloord to Den Haag
+    case '2': // Drive to Lelystad, train to Den Haag
+      return [[5.7480, 52.7100], [5.4750, 52.5080]]; // Emmeloord to Lelystad
+    case '3': // Drive to P+R near Den Haag
+      return [[5.7480, 52.7100], [4.3500, 52.1000]]; // Emmeloord to P+R near Den Haag
     default:
-      return [[5.3833, 52.2333], [5.1714, 52.2333]]; // Bunschoten to Hilversum
+      return [[5.7480, 52.7100], [4.3100, 52.0800]]; // Default Emmeloord to Den Haag
   }
 };
 
 export const getParkingCoordinates = (routeId: string): [number, number] => {
   console.log(`Getting parking coordinates for route ID: ${routeId}`);
   switch (routeId) {
-    case '1':
-      return [5.3872, 52.1561]; // Amersfoort
-    case '2':
-      return [5.1222, 52.0900]; // Utrecht
+    case '1': // City center parking
+      return [4.3100, 52.0800]; // Den Haag city center
+    case '2': // Lelystad station parking
+      return [5.4750, 52.5080]; // Lelystad station
+    case '3': // P+R near Den Haag
+      return [4.3500, 52.1000]; // P+R facility near Den Haag
     default:
-      return [5.1714, 52.2333]; // Hilversum
+      return [4.3100, 52.0800]; // Default
   }
 };
 
 export const getTrainCoordinates = (parkingCoordinates: [number, number]): [number, number][] => {
   console.log(`Getting train coordinates from parking location:`, parkingCoordinates);
+  
+  const denHaagCoordinates: [number, number] = [4.3100, 52.0800]; // Den Haag center
+  
   return [
     parkingCoordinates,
-    [4.3246, 52.0799], // Den Haag
+    denHaagCoordinates,
   ];
 };
 

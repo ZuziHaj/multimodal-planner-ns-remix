@@ -1,20 +1,43 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import RouteForm from '@/components/RouteForm';
 import RouteCard from '@/components/RouteCard';
 import RouteDetails from '@/components/RouteDetails';
 import JourneyMap from '@/components/JourneyMap';
-import { sampleRoutes } from '@/utils/routeData';
 import { Route, RouteFilter } from '@/utils/types';
+import { tripOptionsData } from '@/utils/tripOptionsData';
+import { convertTripOptionsToRoutes } from '@/utils/routeConverter';
 
 const Index = () => {
-  const [routes, setRoutes] = useState<Route[]>(sampleRoutes);
-  const [selectedRouteId, setSelectedRouteId] = useState<string>(sampleRoutes[0].id);
-  const selectedRoute = routes.find(route => route.id === selectedRouteId) || routes[0];
+  const [routes, setRoutes] = useState<Route[]>([]);
+  const [selectedRouteId, setSelectedRouteId] = useState<string>("");
+  const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
+  
+  // Initialize routes from the trip options data
+  useEffect(() => {
+    const convertedRoutes = convertTripOptionsToRoutes(tripOptionsData);
+    setRoutes(convertedRoutes);
+    
+    // Set initial selected route to the first one
+    if (convertedRoutes.length > 0) {
+      setSelectedRouteId(convertedRoutes[0].id);
+      setSelectedRoute(convertedRoutes[0]);
+    }
+  }, []);
+  
+  // Update selected route when selectedRouteId changes
+  useEffect(() => {
+    if (selectedRouteId && routes.length > 0) {
+      const route = routes.find(route => route.id === selectedRouteId);
+      if (route) {
+        setSelectedRoute(route);
+      }
+    }
+  }, [selectedRouteId, routes]);
 
   const handleFilterChange = (filter: RouteFilter) => {
-    let sortedRoutes = [...sampleRoutes];
+    let sortedRoutes = [...routes];
     
     switch (filter.sortBy) {
       case 'time':
@@ -29,14 +52,29 @@ const Index = () => {
     }
     
     setRoutes(sortedRoutes);
-    setSelectedRouteId(sortedRoutes[0].id);
+    
+    if (sortedRoutes.length > 0) {
+      setSelectedRouteId(sortedRoutes[0].id);
+    }
   };
+
+  // If data is still loading
+  if (routes.length === 0 || !selectedRoute) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="container mx-auto px-4 py-6">
+          <h2 className="text-2xl font-bold mb-6">Loading route options...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <div className="container mx-auto px-4 py-6">
-        <h2 className="text-2xl font-bold mb-6">Multimodal Routes: Bunschoten to Den Haag</h2>
+        <h2 className="text-2xl font-bold mb-6">Multimodal Routes: Emmeloord to Den Haag</h2>
         
         <RouteForm onFilterChange={handleFilterChange} />
         
