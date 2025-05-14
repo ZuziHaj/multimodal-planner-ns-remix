@@ -19,14 +19,18 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'Helvetica', 'Arial', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
-				'ns-blue': '#1A57A4',  // NS brand blue
+				'ns-blue': '#002776',  // Updated NS brand blue
 				'ns-yellow': '#FFC917', // NS brand yellow
+				'ns-text': '#1A1A1A',  // NS text color
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'

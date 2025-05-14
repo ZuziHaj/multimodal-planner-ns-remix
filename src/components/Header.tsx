@@ -7,9 +7,9 @@ const Header: React.FC = () => {
       <div className="flex items-center gap-3">
         <div className="flex items-center">
           <img 
-            src="/lovable-uploads/8ccbf5ae-eed8-4be9-9e68-20b7e02bc399.png" 
+            src="/lovable-uploads/2cc0595a-747d-4ddc-bb9f-47a4d9e578fd.png" 
             alt="NS logo" 
-            className="h-8 w-auto"
+            className="h-10 w-auto bg-ns-yellow p-1 rounded-sm"
           />
         </div>
         <h1 className="text-xl font-bold">Multimodal Planner</h1>

@@ -23,15 +23,15 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
     const routeOption = tripOptionsData.tripOptions[routeId - 1];
     
     if (routeOption.recommended) {
-      return <Badge className="bg-blue-100 text-blue-800 ml-2">Recommended</Badge>;
+      return <Badge className="bg-ns-yellow text-ns-blue ml-2 font-medium">Recommended</Badge>;
     }
     
     if (routeOption.fastest) {
-      return <Badge className="bg-green-100 text-green-800 ml-2">Fastest</Badge>;
+      return <Badge className="bg-blue-100 text-ns-blue ml-2 font-medium">Fastest</Badge>;
     }
     
     if (routeOption.cheapest) {
-      return <Badge className="bg-amber-100 text-amber-800 ml-2">Cheapest</Badge>;
+      return <Badge className="bg-green-100 text-green-800 ml-2 font-medium">Cheapest</Badge>;
     }
     
     return null;
@@ -45,20 +45,20 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
   return (
     <div 
       className={`bg-white rounded-lg shadow-md p-4 mb-4 cursor-pointer transition-all ${
-        selected ? 'ring-2 ring-primary' : 'hover:shadow-lg'
+        selected ? 'ring-2 ring-ns-blue border-l-4 border-ns-yellow' : 'hover:shadow-lg border-l-4 border-transparent'
       }`}
       onClick={handleSelect}
     >
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-4">
         <div className="flex items-center mb-2 md:mb-0">
-          <div className="text-lg font-medium">
+          <div className="text-lg font-medium text-ns-text">
             {route.departureTime} - {route.arrivalTime}
             {getBadgeForRoute()}
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center text-sm">
-            <Clock className="h-4 w-4 mr-1" />
+            <Clock className="h-4 w-4 mr-1 text-ns-blue" />
             {formatDuration(route.totalDuration)}
           </div>
           <div className="text-sm font-medium">€{route.totalCost.toFixed(2)}</div>
@@ -68,7 +68,7 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
       <div className="flex items-center gap-3 text-sm mb-4">
         {route.segments[0] && (
           <div className="flex items-center">
-            <Car className="h-4 w-4 text-blue-500 mr-1" /> 
+            <Car className="h-4 w-4 text-ns-blue mr-1" /> 
             {route.segments[0].distance} km
           </div>
         )}
@@ -81,7 +81,7 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
           <>
             <div>→</div>
             <div className="flex items-center">
-              <Train className="h-4 w-4 text-yellow-500 mr-1" />
+              <Train className="h-4 w-4 text-ns-yellow mr-1" />
               {route.segments[2]?.distance || 0} km
             </div>
           </>
@@ -90,11 +90,11 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
       
       <div className="flex flex-wrap gap-2 mb-3">
         {route.segments.map((segment, index) => (
-          <div key={index} className={`text-xs px-2 py-1 ${
-            segment.mode === 'car' ? 'bg-blue-50 text-blue-700' : 
+          <div key={index} className={`text-xs px-2 py-1 rounded-full ${
+            segment.mode === 'car' ? 'bg-blue-50 text-ns-blue' : 
             segment.mode === 'parking' ? 'bg-green-50 text-green-700' : 
-            'bg-yellow-50 text-yellow-700'
-          } rounded-full`}>
+            'bg-ns-yellow/20 text-ns-blue'
+          }`}>
             {segment.mode === 'car' && `Drive to ${segment.to}`}
             {segment.mode === 'parking' && `Park for €${segment.cost.toFixed(2)}`}
             {segment.mode === 'train' && segment.details}
@@ -132,7 +132,7 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, selected, onSelect }) => {
           </div>
           
           <div className="mt-4 flex justify-end">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button className="bg-ns-yellow text-ns-blue hover:bg-ns-yellow/90 font-semibold">
               View Details
             </Button>
           </div>

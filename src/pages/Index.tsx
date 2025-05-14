@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import RouteForm from '@/components/RouteForm';
@@ -69,27 +70,27 @@ const Index = () => {
   // If data is still loading
   if (routes.length === 0 || !selectedRoute) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 font-sans">
         <Header />
         <div className="container mx-auto px-4 py-6">
-          <h2 className="text-2xl font-bold mb-6">Loading route options...</h2>
+          <h2 className="text-2xl font-bold mb-6 text-ns-blue">Loading route options...</h2>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 font-sans">
       <Header />
       <div className="container mx-auto px-4 py-6">
-        <h2 className="text-2xl font-bold mb-6">Multimodal Routes: Emmeloord to Den Haag</h2>
+        <h2 className="text-2xl font-bold mb-6 text-ns-blue">Multimodal Routes: Emmeloord to Den Haag</h2>
         
         <RouteForm onFilterChange={handleFilterChange} />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <div className="mb-4">
-              <h3 className="text-lg font-medium">Route Options</h3>
+              <h3 className="text-lg font-medium text-ns-blue">Route Options</h3>
               <p className="text-sm text-muted-foreground">
                 Choose the best option for your journey
               </p>
