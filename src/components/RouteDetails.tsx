@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Route } from '@/utils/types';
 import { formatDuration } from '@/utils/formatters';
@@ -34,7 +33,7 @@ const RouteDetails: React.FC<RouteDetailsProps> = ({ route }) => {
               </Badge>
             </div>
             <div>
-              <Badge className="bg-green-100 text-green-800">
+              <Badge className="bg-green-100 text-green-800 text-xs">
                 {route.totalCO2.toFixed(1)} kg CO₂
               </Badge>
             </div>
